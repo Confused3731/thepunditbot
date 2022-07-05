@@ -37,6 +37,7 @@ class HPBot():
         self.EXCLUDED_USERS.append('thebenshapirobotbot')
         self.EXCLUDED_USERS.append('thehasanpikerbot')
         self.EXCLUDED_USERS.append('automoderator')
+        self.config = config # Cache for later saving
 
         self.load_pundits()
 
@@ -87,15 +88,17 @@ class HPBot():
 
             self.EXCLUDED_USERS.append(comment.author.name.lower())
             self.save_reddit_config()
+            logging.debug(f'Opting out user {comment.author.name}')
 
         return replies
 
     def save_reddit_config(self):
-        config = {}
+        config = self.config
         config['EXCLUDED_USERS'] = list(set(self.EXCLUDED_USERS))
         config['EXCLUDED_SUBS'] = list(set(self.EXCLUDED_SUBS))
+        config['INCLUDED_SUBS'] = list(set(self.INCLUDED_SUBS))
         with open('reddit_config.json', 'w+') as f:
-            f.write(json.dumps(config))
+            f.write(json.dumps(config, indent=2))
 
     def clean_comment(self, comment):
         return ' '.join(w.lower() for w in comment.body.split())
@@ -104,6 +107,7 @@ class HPBot():
         words = self.clean_comment(comment)
         for word in self.pundits[pundit_name]['shitposts'].keys():
             if word.lower() in words:
+                logging.debug(f'Extracted keyword {word} from comment')
                 return word
         return None
 
@@ -228,8 +232,7 @@ class HPBot():
     def inbox_stream_thread(self):
         logging.info('Starting inbox_stream_thread')
         for item in self.r.inbox.stream():
-            logging.info('Found unread mail')
-            logging.info(repr(item))
+            logging.debug(f'Found unread mail {repr(item)}')
             if isinstance(item, Comment):
                 self.respond(item)
         logging.info('End of inbox_stream_thread')
