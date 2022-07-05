@@ -1,16 +1,16 @@
 mkdir -p /usr/src/venv
-virtualenv --python $(which python3) /usr/src/venv/benshapirobot
+virtualenv --python $(which python3) /usr/src/venv/hasanpikerbot
 
-cat > /etc/systemd/system/benshapirobot.service <<EOM
+cat > /etc/systemd/system/hasanpikerbot.service <<EOM
 [Unit]
-Description=Ben's Happy Bot
+Description=Hasan's Happy Bot
 After=network.target
 
 [Service]
 Type=simple
 User=tad
-WorkingDirectory=/usr/src/benshapirobot
-ExecStart=/usr/src/venv/benshapirobot/bin/python /usr/src/benshapirobot/main.py
+WorkingDirectory=/usr/src/hasanpikerbot
+ExecStart=/usr/src/venv/hasanpikerbot/bin/python /usr/src/hasanpikerbot/main.py
 StandardOutput=syslog
 StandardError=syslog
 Restart=always
@@ -19,4 +19,4 @@ Restart=always
 WantedBy=multi-user.target
 EOM
 
-systemctl enable /etc/systemd/system/benshapirobot.service
+systemctl enable /etc/systemd/system/hasanpikerbot.service
