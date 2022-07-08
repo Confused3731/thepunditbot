@@ -220,11 +220,7 @@ class HPBot():
         elif 'bad bot' in text:
             response = self.reply_if_appropriate(comment, 'BAD-BOT-REPLY')
         else:
-            key = self.extract_keyword_from_comment(comment)
-            if key is None:
-                response = self.reply_if_appropriate(comment, 'GENERIC')
-            else:
-                response = self.reply_if_appropriate(comment, 'SUMMONS')
+            response = self.reply_if_appropriate(comment, 'SUMMONS')
 
         if response is not None:
             comment.mark_read()
